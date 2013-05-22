@@ -2,7 +2,7 @@ body{
 
 }
 
-#section-title .section_repeatable{
+#section-title .section_repeatable, #list-section-title .section_repeatable{
 	list-style: circle;
 	padding-left: 20px;
 	padding-bottom: 12px;
