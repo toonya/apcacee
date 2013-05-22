@@ -197,7 +197,7 @@ class ty_section_meta
 	
 	// add meta box
 	public function show_section_content_meta_box() {  	    
-	    wp_editor( /* $content */'', 'section-page-content', array('wpautop'=>false) );
+	    wp_editor( /* $content */'', 'section-page-content', array('wpautop'=>false,'media_buttons'=>false) );
 	}
 	public	function show_section_meta_box() {
 		global $post;
