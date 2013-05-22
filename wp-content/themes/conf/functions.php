@@ -726,6 +726,17 @@ if ( is_admin() ) {
 	    foreach($options as $imgfield => $imgurl){
 		    echo '<input placeholder="Enter" name="travel-imgs['.$imgfield .']" value="'.$imgurl .'" />';	   
 	    }
+	    $metas = get_option( 'travel-imgs' );
+	    $meta = '';
+	    wp_editor( $content, $editor_id, $settings = array() );
+	    $image = get_template_directory_uri().'/images/banner.png'; 
+	    echo '<span class="custom_default_image" style="display:none">'.$image.'</span>';  
+    if ($meta) { $image = wp_get_attachment_image_src($meta, 'medium'); $image = $image[0]; }                 
+echo    '<input name="img1" type="hidden" class="custom_upload_image" value="'.$meta.'" /> 
+                <img src="'.$image.'" class="custom_preview_image" alt="" /><br /> 
+                    <input class="custom_upload_image_button button" type="button" value="Choose Image" /> 
+                    <small> <a href="#" class="custom_clear_image_button">Remove Image</a></small> 
+                    <br clear="all" /><span class="description">A description for the field.</span>';  
 
 	}
 	
