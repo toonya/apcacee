@@ -8,7 +8,7 @@ add section_page on admin menu
 
 $custom_section = array(
 	array("type"=>"page_section","name"=>"section"),
-	array("type"=>"list_section","name"=>"list_section")
+	array("type"=>"list_section","name"=>"list section")
 );
 new ty_section_page($custom_section);	
 
