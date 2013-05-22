@@ -706,11 +706,13 @@ if ( is_admin() ) {
 	
 	    // Settings fields and sections
 	    add_settings_section( 'section_typography', '图片列表', 'my_section_typography', 'travel-imgs' );
-	    $img_count = 5;
+/*
+	    $img_count = 3;
 	    for($i=1;$i<=$img_count;$i++){
 		    $img_num = 'img'.$i;
 		    add_settings_field( $img_num, $img_num, 'travel_img_field', 'travel-imgs', 'section_typography',array($img_num) );
 	    }
+*/
 /*
 	    $img1='img1';
 	    $img2='img2';
@@ -720,20 +722,27 @@ if ( is_admin() ) {
 	}
 	function my_section_typography() {
 	    echo '在这里添加图片';
+	    $options = (array) get_option( 'travel-imgs' );
+	    foreach($options as $imgfield => $imgurl){
+		    echo '<input placeholder="Enter" name="travel-imgs['.$imgfield .']" value="'.$imgurl .'" />';	   
+	    }
+
 	}
 	
+/*
 	function travel_img_field($img_num) {
 		$img_tar = $img_num[0];
 	    $options = (array) get_option( 'travel-imgs' );
-	    $current_font = 'arial';
+	    $current_img = '';
 	
 	    if ( isset( $options[$img_tar] ) )
-	        $current_font = $options[$img_tar];
+	        $current_img = $options[$img_tar];
 	
 	    ?>
-	    	<input name="travel-imgs[<?php echo $img_tar; ?>]" value="<?php echo $current_font ?>" />
+	    	<input placeholder="Enter" name="travel-imgs[<?php echo $img_tar; ?>]" value="<?php echo $current_img ?>" />
 	    <?php
 	}
+*/
 	?>
 	
 
