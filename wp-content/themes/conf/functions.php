@@ -680,14 +680,14 @@ if ( is_admin() ) {
 <?php 
 	add_action( 'admin_menu', 'my_admin_menu' );
 	function my_admin_menu() {
-	    add_menu_page( 'My Theme Options', 'My Theme Options', 'edit_theme_options', 'my-theme-options', 'my_theme_options' );
+	    add_menu_page( '旅游图片', '旅游图片', 'edit_theme_options', 'travel-options', 'my_theme_options' );
 	}
 	
 	function my_theme_options() {
 	?>
 	    <div class="wrap">
 	        <div><br></div>
-	        <h2>My Theme Options</h2>
+	        <h2>旅游图片	</h2>
 	
 	        <form method="post" action="options.php">
 	            <?php wp_nonce_field( 'update-options' ); ?>
@@ -705,12 +705,12 @@ if ( is_admin() ) {
 	    register_setting( 'my-options', 'my-options' );
 	
 	    // Settings fields and sections
-	    add_settings_section( 'section_typography', 'Typography Options', 'my_section_typography', 'my-options' );
+	    add_settings_section( 'section_typography', '图片列表', 'my_section_typography', 'my-options' );
 	    add_settings_field( 'primary-font', 'Primary Font', 'my_field_primary_font', 'my-options', 'section_typography' );
 	    add_settings_field( 'sub-font', 'Sub Font', 'my_field_sub_font', 'my-options', 'section_typography' );
 	}
 	function my_section_typography() {
-	    echo 'Section description can go here.';
+	    echo '在这里添加图片';
 	}
 	
 	function my_field_primary_font() {
