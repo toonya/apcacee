@@ -6,17 +6,18 @@ add section_page on admin menu
 
 */
 
-
-
-	new ty_section_page();	
-
+$custom_section = array(
+	array("type"=>"page_section","name"=>"section"),
+	array("type"=>"list_section","name"=>"list_section")
+);
+new ty_section_page($custom_section);	
 
 /** 
  * The main Class
  */
  
  
-class ty_section_page
+class ty_section_page      //这里为什么要做这个类？ 这个类的意思是以后用来做一个用户自己添加section的页面，可以定制一些信息。
 {
     public 	function ty_init() {
     	wp_enqueue_script('ty_section-page', get_stylesheet_directory_uri().'/section-page/section-page.js');
@@ -27,12 +28,23 @@ class ty_section_page
     	wp_enqueue_style('ty-section', get_stylesheet_directory_uri().'/section-page/section-page-front.css');
     }
      
-    public function __construct()
+    public function __construct($custom_section)
     {	
     	add_action('admin_enqueue_scripts', array($this,'ty_init'));   //回调函数用函数组把指针和方程传过去 也可以直接用function(){code herr...}
-    	add_action('wp_enqueue_scripts', array($this,'ty_front_init'));//模版页面中包含 wp_head() 才能调用出来
-    	new ty_section_page_buld();
-    	new ty_section_meta();
+    	if($custom_section=="") $custom_section=array(array("type"=>"page_section"));
+    	foreach($custom_section as $section){
+	    	switch($section['type']){
+		    	case "page_section":
+			    	new ty_section_page_buld($section['name']);
+			    	new ty_section_meta($section['name']);
+			    	add_action('wp_enqueue_scripts', array($this,'ty_front_init'));//模版页面中包含 wp_head() 才能调用出来
+		    	break;
+		    	case "list_section":
+			    	new ty_section_page_buld($section['name']);
+			    	new ty_section_meta($section['name']);	    		
+		    	break;
+	    	}
+    	}
     }
 }
 ?>
@@ -55,40 +67,33 @@ Buld custom post type
 
 class ty_section_page_buld      
 {
-
-    protected $labels = array(						//保护类型写上，$name申明,使用的时候 $this->name ($这个不用)
-		    'name' => 'Sections',
-		    'singular_name' => 'Section',
-		    'add_new' => 'Add New',
-		    'add_new_item' => 'Add New Section',
-		    'edit_item' => 'Edit Section',
-		    'new_item' => 'New Section',
-		    'all_items' => 'All Sections',
-		    'view_item' => 'View Section',
-		    'search_items' => 'Search Sections',
-		    'not_found' =>  'No books found',
-		    'not_found_in_trash' => 'No sections found in Trash', 
-		    'parent_item_colon' => '',
-		    'menu_name' => 'Sections'
-		  );
 	protected $args = array(
-		    'labels' => '',
-		    'description' => 'A short descriptive summary of what the post type is.',
 		    'public' => true,
 		    'publicly_queryable' => true,
 		    'show_ui' => true, 
 		    'show_in_menu' => true, 
 		    'query_var' => true,
-		    'rewrite' => array( 'slug' => 'section', 'with_front' => false ),
 		    'capability_type' => 'post',
 		    'has_archive' => true, 
 		    'hierarchical' => false,
 		    'menu_position' => null,
 		    'supports' => array( 'title' )
-		  );		  
-    public function __construct()
+		  );	
+	protected $page_name;	  	  
+    public function __construct($page_name)
     {	
-    	$this->args['labels'] = $this->labels;
+        if($page_name) {
+        	
+        	$this->page_name = $page_name;
+        
+	    	$this->args['label'] = $this->page_name;
+
+	    	$this->args['rewrite'] = array( 'slug' => $this->page_name, 'with_front' => false );
+	    	
+        }
+        else{
+	        $this->page_name = "section";
+        }
         add_action( 'init', array($this, 'section_page_init') );
     }
     /**
@@ -96,7 +101,7 @@ class ty_section_page_buld
      */
      
     public 	function section_page_init() {
-		register_post_type( 'section', $this->args);
+		register_post_type( $this->page_name, $this->args);
     } 
 
 
@@ -118,19 +123,39 @@ Add costom meta box
 class ty_section_meta
 {
 	protected $prefix_sec = 'sec_';  
-	protected $section_meta_fields;  
+	protected $section_meta_fields;
+	protected $page_name = 'section';  
 
-    public function __construct()
+    public function __construct($page_name)
     {	
 	    $this->section_meta_fields = array( 
+/*
 	    	array(
-	        'label'=> 'Sections',  
-	        'desc'  => 'Add sections for this post.',  
-	        'id'    => $this->prefix_sec.'text',  
-	        'type'  => 'section',
-	        'content' => $this->prefix_sec.'textarea'
+	    		'label' => 'Section type',
+	    		'desc' => 'Choose the type of section',
+	    		'id' => $this->prefix_sec.'radio',
+	    		'type'  => 'section_type',
+				'options' => array (
+					'one' => array (
+						'label' => 'page',
+						'value'	=> 'page'
+					),
+					'two' => array(
+						'label' => 'list',
+						'value' => 'list'
+					)
+	    		)
+	    	),
+*/
+	    	array(
+		        'label'=> 'Sections',  
+		        'desc'  => 'Add sections for this post.',  
+		        'id'    => $this->prefix_sec.'text',  
+		        'type'  => 'section',
+		        'content' => $this->prefix_sec.'textarea'
 	        )   
 	    );
+	    if($page_name) $this->page_name = $page_name;
 		add_action('add_meta_boxes', array($this,'add_section_meta_box'));
 		add_action('admin_head',array($this,'add_section_scripts'));
 		add_action('save_post', array($this,'save_section_meta'));    	 
@@ -142,14 +167,14 @@ class ty_section_meta
 	        'section_content_meta_box', // $id  
 	        'Section Content', // $title   
 	        array($this,'show_section_content_meta_box'), // $callback  
-	        'section', // $page  
+	        $this->page_name, // $page  
 	        'normal', // $context  
 	        'high'); // $priority 
 	    add_meta_box(  
 	        'section_meta_box', // $id  
 	        'Section Title', // $title   
 	        array($this,'show_section_meta_box'), // $callback  
-	        'section', // $page  
+	        $this->page_name, // $page  
 	        'side', // $context  
 	        'core'); // $priority 
           
@@ -186,8 +211,16 @@ class ty_section_meta
 	        if($field['type']=='section') $meta_content = get_post_meta($post->ID, $field['content'], true);  
 	        // begin a table row with  
 	        echo '<tr>';  
-	                switch($field['type']) {  
+	                switch($field['type']) {
+	                	case 'section_type':
+						    echo '</select><br /><span class="description">'.$field['desc'].'</span><br />';  
+						    foreach ( $field['options'] as $option ) {  
+						        echo '<input type="radio" name="'.$field['id'].'" id="'.$option['value'].'" value="'.$option['value'].'" ',$meta == $option['value'] ? ' checked="checked"' : '',' /> 
+				                <label for="'.$option['value'].'">   '.$option['label'].'</label><br />';  
+						    }  
+    	                	break;  
 						case 'section':  
+						    echo '</select><br /><span class="description">'.$field['desc'].'</span>';  
 						    echo '<ul id="'.$field['id'].'-repeatable" class="section_repeatable">';  
 						    $i = 0;  
 						    if ($meta) {  
