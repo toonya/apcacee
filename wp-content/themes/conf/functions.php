@@ -715,7 +715,6 @@ if ( is_admin() ) {
 	
 	function my_field_primary_font() {
 	    $options = (array) get_option( 'travel-imgs' );
-	    $fonts = get_my_available_fonts();
 	    $current_font = 'arial';
 	
 	    if ( isset( $options['primary-font'] ) )
@@ -727,40 +726,14 @@ if ( is_admin() ) {
 	}
 	function my_field_sub_font() {
 	    $options = (array) get_option( 'travel-imgs' );
-	    $fonts = get_my_available_fonts();
 	    $current_font = 'arial';
 	
 	    if ( isset( $options['sub-font'] ) )
 	        $current_font = $options['sub-font'];
 	
 	    ?>
-	        <select name="travel-imgs[sub-font]">
-	        <?php foreach( $fonts as $font_key => $font ): ?>
-	            <option <?php selected( $font_key == $current_font ); ?> value="<?php echo $font_key; ?>"><?php echo $font['name']; ?></option>
-	        <?php endforeach; ?>
-	        </select>
+	    	<input name="travel-imgs[sub-font]" value="<?php echo $current_font ?>" />
 	    <?php
-	}
-	function get_my_available_fonts() {
-	    $fonts = array(
-	        'open-sans' => array(
-	            'name' => 'Open Sans',
-	            'import' => '@import url(http://fonts.googleapis.com/css?family=Open+Sans);',
-	            'css' => "font-family: 'Open Sans', sans-serif;"
-	        ),
-	        'lato' => array(
-	            'name' => 'Lato',
-	            'import' => '@import url(http://fonts.googleapis.com/css?family=Lato);',
-	            'css' => "font-family: 'Lato', sans-serif;"
-	        ),
-	        'arial' => array(
-	            'name' => 'Arial',
-	            'import' => '',
-	            'css' => "font-family: Arial, sans-serif;"
-	        )
-	    );
-	
-	    return apply_filters( 'my_available_fonts', $fonts );
 	}
 	?>
 	
