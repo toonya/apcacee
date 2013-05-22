@@ -706,33 +706,32 @@ if ( is_admin() ) {
 	
 	    // Settings fields and sections
 	    add_settings_section( 'section_typography', '图片列表', 'my_section_typography', 'travel-imgs' );
-	    add_settings_field( 'primary-font', 'img one', 'my_field_primary_font', 'travel-imgs', 'section_typography' );
-	    add_settings_field( 'sub-font', 'img two', 'my_field_sub_font', 'travel-imgs', 'section_typography' );
+	    $img_count = 5;
+	    for($i=1;$i<=$img_count;$i++){
+		    $img_num = 'img'.$i;
+		    add_settings_field( $img_num, $img_num, 'travel_img_field', 'travel-imgs', 'section_typography',array($img_num) );
+	    }
+/*
+	    $img1='img1';
+	    $img2='img2';
+	    add_settings_field( $img1, $img1, 'travel_img_field', 'travel-imgs', 'section_typography',array($img1) );
+	    add_settings_field( $img2, $img2, 'travel_img_field', 'travel-imgs', 'section_typography',array($img2) );
+*/
 	}
 	function my_section_typography() {
 	    echo '在这里添加图片';
 	}
 	
-	function my_field_primary_font() {
+	function travel_img_field($img_num) {
+		$img_tar = $img_num[0];
 	    $options = (array) get_option( 'travel-imgs' );
 	    $current_font = 'arial';
 	
-	    if ( isset( $options['primary-font'] ) )
-	        $current_font = $options['primary-font'];
+	    if ( isset( $options[$img_tar] ) )
+	        $current_font = $options[$img_tar];
 	
 	    ?>
-	    	<input name="travel-imgs[primary-font]" value="<?php echo $current_font ?>" />
-	    <?php
-	}
-	function my_field_sub_font() {
-	    $options = (array) get_option( 'travel-imgs' );
-	    $current_font = 'arial';
-	
-	    if ( isset( $options['sub-font'] ) )
-	        $current_font = $options['sub-font'];
-	
-	    ?>
-	    	<input name="travel-imgs[sub-font]" value="<?php echo $current_font ?>" />
+	    	<input name="travel-imgs[<?php echo $img_tar; ?>]" value="<?php echo $current_font ?>" />
 	    <?php
 	}
 	?>
