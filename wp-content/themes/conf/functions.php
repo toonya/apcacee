@@ -706,16 +706,17 @@ if ( is_admin() ) {
 	
 	    // Settings fields and sections
 	    add_settings_section( 'section_typography', '图片列表', 'my_section_typography', 'travel-img' );
+/*
 	    $img_num = 5;
 	    for($i=1;$i<=$img_num;$i++){
 	    	$img_slug='img'.$i;
 		    add_settings_field( $img_slug, $img_slug, 'img_add', 'travel-img', 'section_typography',array($img_slug) );
 	    }			
-/*
-			$img_slug = "travel-img";
-		    add_settings_field( $img_slug, $img_slug, 'img_add', 'travel-img', 'section_typography',array($img_slug) );
 */
-
+			$img_slug = "travel-img_ones";
+			$img_slug_sec = "travel-img_sec";
+		    add_settings_field( $img_slug_sec, $img_slug_sec, 'img_add_sec', 'travel-img', 'section_typography',array($img_slug_sec) );
+		    add_settings_field( $img_slug, $img_slug, 'img_add', 'travel-img', 'section_typography',array($img_slug) );
 	}
 	function my_section_typography() {
 	    echo '在这里添加图片';
@@ -728,6 +729,14 @@ if ( is_admin() ) {
 	            <input placeholder="Enter" id="<?php echo $tar_img ?>" name="<?php echo $tar_img ?>" type="text" value="" />
 	    <?php
 	}
+	function img_add_sec($img_slug) {
+		$tar_img = $img_slug[0];
+	    $img_url='';
+		    ?>
+	            <input placeholder="Enter" id="<?php echo $tar_img ?>" name="<?php echo $tar_img ?>" type="text" value="" />
+	    <?php
+	}
+
 	?>
 	
 
