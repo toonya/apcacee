@@ -638,3 +638,28 @@ filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0,StartColorStr=
 	}
 	}
 /* @end */
+
+
+
+/* @group title <h> */
+
+h4,h5,h6,h7{
+	line-height: 48px;
+	font-weight: bold;
+	color: #000;
+}
+h4{
+	font-size: 18px;
+}
+h5{
+	font-size: 16px;
+}
+h6{
+	font-size: 14px;
+}
+h7{
+	font-size: 12px;
+}
+
+
+/* @end */
