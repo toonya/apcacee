@@ -691,8 +691,8 @@ if ( is_admin() ) {
 	
 	        <form method="post" action="options.php">
 	            <?php wp_nonce_field( 'update-options' ); ?>
-	            <?php settings_fields( 'my-options' ); ?>
-	            <?php do_settings_sections( 'my-options' ); ?>
+	            <?php settings_fields( 'travel-imgs' ); ?>
+	            <?php do_settings_sections( 'travel-imgs' ); ?>
 	            <?php submit_button(); ?>
 	        </form>
 	    </div>
@@ -702,19 +702,19 @@ if ( is_admin() ) {
 	
 	add_action( 'admin_init', 'my_register_admin_settings' );
 	function my_register_admin_settings() {
-	    register_setting( 'my-options', 'my-options' );
+	    register_setting( 'travel-imgs', 'travel-imgs' );
 	
 	    // Settings fields and sections
-	    add_settings_section( 'section_typography', '图片列表', 'my_section_typography', 'my-options' );
-	    add_settings_field( 'primary-font', 'Primary Font', 'my_field_primary_font', 'my-options', 'section_typography' );
-	    add_settings_field( 'sub-font', 'Sub Font', 'my_field_sub_font', 'my-options', 'section_typography' );
+	    add_settings_section( 'section_typography', '图片列表', 'my_section_typography', 'travel-imgs' );
+	    add_settings_field( 'primary-font', 'img one', 'my_field_primary_font', 'travel-imgs', 'section_typography' );
+	    add_settings_field( 'sub-font', 'img two', 'my_field_sub_font', 'travel-imgs', 'section_typography' );
 	}
 	function my_section_typography() {
 	    echo '在这里添加图片';
 	}
 	
 	function my_field_primary_font() {
-	    $options = (array) get_option( 'my-options' );
+	    $options = (array) get_option( 'travel-imgs' );
 	    $fonts = get_my_available_fonts();
 	    $current_font = 'arial';
 	
@@ -722,15 +722,11 @@ if ( is_admin() ) {
 	        $current_font = $options['primary-font'];
 	
 	    ?>
-	        <select name="my-options[primary-font]">
-	        <?php foreach( $fonts as $font_key => $font ): ?>
-	            <option <?php selected( $font_key == $current_font ); ?> value="<?php echo $font_key; ?>"><?php echo $font['name']; ?></option>
-	        <?php endforeach; ?>
-	        </select>
+	    	<input name="travel-imgs[primary-font]" value="<?php echo $current_font ?>" />
 	    <?php
 	}
 	function my_field_sub_font() {
-	    $options = (array) get_option( 'my-options' );
+	    $options = (array) get_option( 'travel-imgs' );
 	    $fonts = get_my_available_fonts();
 	    $current_font = 'arial';
 	
@@ -738,7 +734,7 @@ if ( is_admin() ) {
 	        $current_font = $options['sub-font'];
 	
 	    ?>
-	        <select name="my-options[sub-font]">
+	        <select name="travel-imgs[sub-font]">
 	        <?php foreach( $fonts as $font_key => $font ): ?>
 	            <option <?php selected( $font_key == $current_font ); ?> value="<?php echo $font_key; ?>"><?php echo $font['name']; ?></option>
 	        <?php endforeach; ?>
