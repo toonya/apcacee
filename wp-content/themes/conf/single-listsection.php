@@ -11,11 +11,16 @@ get_header(); ?>
 				<?php while ( have_posts() ) : the_post(); ?>
 
 					<?php
+						$i = 1;
 						$post_meta_data = get_post_custom($post->ID) ;
 						$section = unserialize($post_meta_data['sec_textarea'][0]);
 						echo '<div id="list-section-content"><ul class="section_repeatable">';  
 							foreach ($section as $string) {  
-							    echo '<li>'.$string.'</li>';  
+								?> 
+								<a name="section<?php echo $i; ?>"></a>
+								<?php
+							    echo '<li">'.$string.'</li><br /><br />';  
+							    $i++;
 							}  
 							echo '</ul></div>'; 
 					?>
@@ -34,10 +39,12 @@ get_header(); ?>
 					<div class="side-e">
 					<h1>本页导航</h1>
 						<?php
-						$section_nav = unserialize($post_meta_data['sec_text'][0]);
 						echo '<div id="list-section-title"><ul class="section_repeatable">';  
+							$section_nav = unserialize($post_meta_data['sec_text'][0]);
+							$i = 1;
 							foreach ($section_nav as $string) {  
-							    echo '<li>'.$string.'</li>';  
+							    echo '<li><a href="#section'.$i.'">'.$string.'</a></li>';  
+							    $i++;
 							}  
 							echo '</ul></div>'; 
 						

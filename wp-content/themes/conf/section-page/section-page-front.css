@@ -8,3 +8,8 @@ body{
 	padding-bottom: 12px;
 	cursor: pointer;
 }
+
+#list-section-title .section_repeatable a{
+	color: #555;
+	text-decoration: none;
+}
