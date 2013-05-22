@@ -691,8 +691,8 @@ if ( is_admin() ) {
 	
 	        <form method="post" action="options.php">
 	            <?php wp_nonce_field( 'update-options' ); ?>
-	            <?php settings_fields( 'travel-img' ); ?>
-	            <?php do_settings_sections( 'travel-img' ); ?>
+	            <?php settings_fields( 'my-options' ); ?>
+	            <?php do_settings_sections( 'my-options' ); ?>
 	            <?php submit_button(); ?>
 	        </form>
 	    </div>
@@ -702,41 +702,70 @@ if ( is_admin() ) {
 	
 	add_action( 'admin_init', 'my_register_admin_settings' );
 	function my_register_admin_settings() {
-	    register_setting( 'travel-img', 'travel-img' );
+	    register_setting( 'my-options', 'my-options' );
 	
 	    // Settings fields and sections
-	    add_settings_section( 'section_typography', '图片列表', 'my_section_typography', 'travel-img' );
-/*
-	    $img_num = 5;
-	    for($i=1;$i<=$img_num;$i++){
-	    	$img_slug='img'.$i;
-		    add_settings_field( $img_slug, $img_slug, 'img_add', 'travel-img', 'section_typography',array($img_slug) );
-	    }			
-*/
-			$img_slug = "travel-img_ones";
-			$img_slug_sec = "travel-img_sec";
-		    add_settings_field( $img_slug_sec, $img_slug_sec, 'img_add_sec', 'travel-img', 'section_typography',array($img_slug_sec) );
-		    add_settings_field( $img_slug, $img_slug, 'img_add', 'travel-img', 'section_typography',array($img_slug) );
+	    add_settings_section( 'section_typography', '图片列表', 'my_section_typography', 'my-options' );
+	    add_settings_field( 'primary-font', 'Primary Font', 'my_field_primary_font', 'my-options', 'section_typography' );
+	    add_settings_field( 'sub-font', 'Sub Font', 'my_field_sub_font', 'my-options', 'section_typography' );
 	}
 	function my_section_typography() {
 	    echo '在这里添加图片';
 	}
 	
-	function img_add($img_slug) {
-		$tar_img = $img_slug[0];
-	    $img_url='';
-		    ?>
-	            <input placeholder="Enter" id="<?php echo $tar_img ?>" name="<?php echo $tar_img ?>" type="text" value="" />
+	function my_field_primary_font() {
+	    $options = (array) get_option( 'my-options' );
+	    $fonts = get_my_available_fonts();
+	    $current_font = 'arial';
+	
+	    if ( isset( $options['primary-font'] ) )
+	        $current_font = $options['primary-font'];
+	
+	    ?>
+	        <select name="my-options[primary-font]">
+	        <?php foreach( $fonts as $font_key => $font ): ?>
+	            <option <?php selected( $font_key == $current_font ); ?> value="<?php echo $font_key; ?>"><?php echo $font['name']; ?></option>
+	        <?php endforeach; ?>
+	        </select>
 	    <?php
 	}
-	function img_add_sec($img_slug) {
-		$tar_img = $img_slug[0];
-	    $img_url='';
-		    ?>
-	            <input placeholder="Enter" id="<?php echo $tar_img ?>" name="<?php echo $tar_img ?>" type="text" value="" />
+	function my_field_sub_font() {
+	    $options = (array) get_option( 'my-options' );
+	    $fonts = get_my_available_fonts();
+	    $current_font = 'arial';
+	
+	    if ( isset( $options['sub-font'] ) )
+	        $current_font = $options['sub-font'];
+	
+	    ?>
+	        <select name="my-options[sub-font]">
+	        <?php foreach( $fonts as $font_key => $font ): ?>
+	            <option <?php selected( $font_key == $current_font ); ?> value="<?php echo $font_key; ?>"><?php echo $font['name']; ?></option>
+	        <?php endforeach; ?>
+	        </select>
 	    <?php
 	}
-
+	function get_my_available_fonts() {
+	    $fonts = array(
+	        'open-sans' => array(
+	            'name' => 'Open Sans',
+	            'import' => '@import url(http://fonts.googleapis.com/css?family=Open+Sans);',
+	            'css' => "font-family: 'Open Sans', sans-serif;"
+	        ),
+	        'lato' => array(
+	            'name' => 'Lato',
+	            'import' => '@import url(http://fonts.googleapis.com/css?family=Lato);',
+	            'css' => "font-family: 'Lato', sans-serif;"
+	        ),
+	        'arial' => array(
+	            'name' => 'Arial',
+	            'import' => '',
+	            'css' => "font-family: Arial, sans-serif;"
+	        )
+	    );
+	
+	    return apply_filters( 'my_available_fonts', $fonts );
+	}
 	?>
 	
 
