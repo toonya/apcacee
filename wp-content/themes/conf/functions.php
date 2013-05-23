@@ -727,8 +727,13 @@ if ( is_admin() ) {
 		    echo '<input placeholder="Enter" name="travel-imgs['.$imgfield .']" value="'.$imgurl .'" />';	   
 	    }
 	    $metas = get_option( 'travel-imgs' );
-	    $meta = '';
-	    wp_editor( $content, $editor_id, $settings = array() );
+	    $meta = '';?>
+	    
+	    <?php add_thickbox(); ?><div id="my-content-id" style="display:none;">     <p>          This is my hidden content! It will appear in ThickBox when the link is clicked.     </p></div><a href="#TB_inline?width=600&height=550&inlineId=my-content-id" class="thickbox">View my inline content!</a> 
+	    
+	    <?php
+	    
+/* 	    wp_editor( 'fornone', 'fornone', $settings = array() ); */
 	    $image = get_template_directory_uri().'/images/banner.png'; 
 	    echo '<span class="custom_default_image" style="display:none">'.$image.'</span>';  
     if ($meta) { $image = wp_get_attachment_image_src($meta, 'medium'); $image = $image[0]; }                 
