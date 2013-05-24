@@ -726,15 +726,28 @@ if ( is_admin() ) {
 	    foreach($options as $imgfield => $imgurl){
 		    echo '<input placeholder="Enter" name="travel-imgs['.$imgfield .']" value="'.$imgurl .'" />';	   
 	    }
+	    
+	    //在这里添加new media button
+	    wp_enqueue_media();
+	    ?>
+<!--
+		    <div id="wp-content-media-buttons" class="wp-media-buttons"><a href="#" class="button insert-media add_media" data-editor="content" title="Add Media"><span class="wp-media-buttons-icon"></span> Add Media</a></div>
+	    <div id="wp-content-editor-container" class="wp-editor-container"><textarea class="wp-editor-area" style="height: 360px" cols="40" name="content" id="content"></textarea></div>
+-->
+	
+	    <?php
+		    
 	    $metas = get_option( 'travel-imgs' );
 	    $meta = '';?>
 	    
-	    <?php add_thickbox(); ?><div id="my-content-id" style="display:none;">     <p>          This is my hidden content! It will appear in ThickBox when the link is clicked.     </p></div><a href="#TB_inline?width=600&height=550&inlineId=my-content-id" class="thickbox">View my inline content!</a> 
-	    
+	    <?php add_thickbox(); ?><div id="my-content-id" style="display:none;">     <p>Do something test this function.</p></div><a href="#TB_inline?width=600&height=550&inlineId=my-content-id" class="thickbox">Help</a> 
+	    <div>
+<input class="ty-open-media button" type="button" value="<?php echo _e( 'Upload Image', 'ty-toolbox' );?>" />
+<input type="text" value="" /></div>
+
 	    <?php
-	    
 /* 	    wp_editor( 'fornone', 'fornone', $settings = array() ); */
-	    $image = get_template_directory_uri().'/images/banner.png'; 
+	    $image = ''; 
 	    echo '<span class="custom_default_image" style="display:none">'.$image.'</span>';  
     if ($meta) { $image = wp_get_attachment_image_src($meta, 'medium'); $image = $image[0]; }                 
 echo    '<input name="img1" type="hidden" class="custom_upload_image" value="'.$meta.'" /> 
