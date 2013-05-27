@@ -20,6 +20,7 @@ new ty_section_page($custom_section);
 class ty_section_page      //这里为什么要做这个类？ 这个类的意思是以后用来做一个用户自己添加section的页面，可以定制一些信息。
 {
     public 	function ty_init() {
+		wp_enqueue_script('jquery-ui-slider');
     	wp_enqueue_script('ty_section-page', get_stylesheet_directory_uri().'/section-page/section-page.js');
     	wp_enqueue_style('ty_section-page', get_stylesheet_directory_uri().'/section-page/section-page.css');
     }
@@ -48,10 +49,6 @@ class ty_section_page      //这里为什么要做这个类？ 这个类的意�
     }
 }
 ?>
-
-
-
-
 
 
 
@@ -310,3 +307,81 @@ class ty_section_meta
 
 
 
+
+
+
+<?php 
+	
+/********************
+ //!image area
+ ********************/	
+	
+?>
+
+
+
+<?php 
+	add_action( 'admin_menu', 'my_admin_menu' );
+	function my_admin_menu() {
+	    add_menu_page( '旅游图片', '旅游图片', 'edit_theme_options', 'travel-options', 'my_theme_options' );
+	}
+	
+	function my_theme_options() {
+	?>
+	    <div class="wrap">
+	        <div><br></div>
+	        <h2>旅游图片	</h2>
+	
+	        <form method="post" action="options.php">
+	            <?php wp_nonce_field( 'update-options' ); ?>
+	            <?php settings_fields( 'travel-imgs' ); ?>
+	            <?php do_settings_sections( 'travel-imgs' ); ?>
+	            <?php submit_button(); ?>
+	        </form>
+	    </div>
+	<?php
+	}
+	
+	
+	add_action( 'admin_init', 'my_register_admin_settings' );
+	function my_register_admin_settings() {
+	    register_setting( 'travel-imgs', 'travel-imgs' );
+	
+	    // Settings fields and sections
+	    add_settings_section( 'section_typography', '图片列表', 'my_section_typography', 'travel-imgs' );
+/*
+	    $img_count = 3;
+	    for($i=1;$i<=$img_count;$i++){
+		    $img_num = 'img'.$i;
+		    add_settings_field( $img_num, $img_num, 'travel_img_field', 'travel-imgs', 'section_typography',array($img_num) );
+	    }
+*/
+/*
+	    $img1='img1';
+	    $img2='img2';
+	    add_settings_field( $img1, $img1, 'travel_img_field', 'travel-imgs', 'section_typography',array($img1) );
+	    add_settings_field( $img2, $img2, 'travel_img_field', 'travel-imgs', 'section_typography',array($img2) );
+*/
+	}
+	function my_section_typography() {
+	    echo '在这里添加图片';?>
+	    <a href="#TB_inline?width=600&height=550&inlineId=my-content-id" class="thickbox">Help</a>
+	    <br /><br />
+	    <?php
+	    wp_enqueue_media();
+		$options = (array) get_option( 'travel-imgs' );
+		echo '<div class="img-area"><ul>';
+	    if($options){
+		    foreach($options as $imgfield => $imgurl){
+		    	if(!$imgurl) continue;
+			    echo '<li class="img-list"><a class="sort">|||</a><a href="#" class="button remove-img">-</a><input type="hidden" placeholder="Enter" name="travel-imgs['.$imgfield .']" value="'.esc_url($imgurl) .'" /><img src="" /></li>';	   
+		    }
+		    echo '<li class="img-list img-list-template" style="display:none;"><a class="sort">|||</a><a href="#" class="button remove-img">-</a><input type="hidden" placeholder="Enter" name="travel-imgs[999]" value="" /><img src="" /></li>';
+
+		    echo '<li class="img-add"><a class="ty-open-media" href="#"><img src="'.get_template_directory_uri().'/images/add-new.png" /></a></li>';
+	    }
+	    echo '</ul><div class="clearfix"></div></div>';
+	    //在这里添加new media button
+	    ?>
+	    <?php add_thickbox(); ?><div id="my-content-id" style="display:none;">     <p>Do something test this function.</p></div>
+	    <?php }?>

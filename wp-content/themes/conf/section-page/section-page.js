@@ -11,22 +11,22 @@ jQuery(function($){
 	
 	//add a section area.
 	$(".repeatable-add").on("click",function(){
-		$sectionfiled = $(this).parent().find(".section_repeatable li:last").clone();
+		$sectionfiled = $(this).parent().find(".section_repeatable li.img-list-template").clone();
 		$sectionfiled
-		.insertAfter($(this).parent().find(".section_repeatable li:last"))
+		.insertAfter($(this).parent().find(".section_repeatable li.img-list-template"))
 		.find('.section-title span:first').text("")
 		.parent().hide()
 		.next().show()
 		.find( ":first-child" ).val("");
-		$name_title = $(".section_repeatable li:last").find(".section-title-edit :first-child").attr("name");
-		$name_content = $(".section_repeatable li:last").find("textarea").attr("name");
+		$name_title = $(".section_repeatable li.img-list-template").find(".section-title-edit :first-child").attr("name");
+		$name_content = $(".section_repeatable li.img-list-template").find("textarea").attr("name");
 		$new_name_title = $name_title.replace(/(\d+)/, function(fullMatch, n) {
 				return Number(n) + 1;});
 		$new_name_content = $name_content.replace(/(\d+)/, function(fullMatch, n) {
 				return Number(n) + 1;});		
-		$(".section_repeatable li:last").find(".section-title-edit :first-child").attr("name",$new_name_title).val("");
-		$(".section_repeatable li:last").find("textarea").attr("name",$new_name_content).val("");
-		$(".section_repeatable li:last .section-content-edit").click();
+		$(".section_repeatable li.img-list-template").find(".section-title-edit :first-child").attr("name",$new_name_title).val("");
+		$(".section_repeatable li.img-list-template").find("textarea").attr("name",$new_name_content).val("");
+		$(".section_repeatable li.img-list-template .section-content-edit").click();
 		tinyMCE.activeEditor.setContent("Please enter the new section content here.");
 
 		return false;
@@ -73,25 +73,58 @@ jQuery(function($){
         }  
         return false;  
     });  
-      
-    $('.custom_clear_image_button').click(function() {  
+	  
+	$('.custom_clear_image_button').click(function() {  
         var defaultImage = jQuery(this).parent().siblings('.custom_default_image').text();  
         jQuery(this).parent().siblings('.custom_upload_image').val('');  
         jQuery(this).parent().siblings('.custom_preview_image').attr('src', defaultImage);  
         return false;  
     });  
+	
+	//!sort fix
+	
+	jQuery.fn.extend({
+	  sortfix: function() {
+	    return this.each(function(i,e) { 
+		    $(this).find('input').attr('name',  function(index, name) {
+				return name.replace(/(\d+)/, function(fullMatch, n) {
+					return i;
+				});
+			});
+	    });
+	  }
+	});
+	//remove picture
+	$('.remove-img').click(function(){
+	    $(this).parent().remove();
+	    $('.img-list').not(".img-list-template").sortfix();
+    })
+	
+	$("#submit").click(function(){
+	    $('.img-list-template').remove();
+    })
+	// onload fix 150*150
+	$('.img-list').each(function(i,e){
     
-     var ty_uploader;
+	    $img = $(this).find('input').val();
+		 
+		var reg = /\.jpg/g;
+		
+		$img = $img.replace(reg, '-150x150.jpg');
+		
+		$(this).find('img').attr('src',$img); 
+		 
+    });
+	//media management handle    
+	 var ty_uploader;
 	 var ty_reciever;
 	 
 	 // Bind to our click event in order to open up the new media experience.
-	 $(document.body).on('click.tyOpenMediaManager', '.ty-open-media', function(e){ //ty-open-media is the class of our form button
+	$(document.body).on('click.tyOpenMediaManager', '.ty-open-media', function(e){ //ty-open-media is the class of our form button
 	 
 		 // Prevent the default action from occuring.
 		 e.preventDefault();
 		 
-		// Get our Parent element
-		 ty_reciever = jQuery(this).parent();
 		 
 		 // If the frame already exists, re-open it.
 		 if ( ty_uploader ) {
@@ -109,25 +142,74 @@ jQuery(function($){
 			 },
 		 });
 		 ty_uploader.on('select', function(){
-		 // Grab our attachment selection and construct a JSON representation of the model.
-		 var media_attachment = ty_uploader.state().get('selection').map( function( attachment ) {
-											  attachment = attachment.toJSON();
-											  return attachment; 
-											  });		 
-		// Send the attachment URL to our custom input field via jQuery.
-		$attr = '';
-		$.each( media_attachment[0], function( key, value ) {
-		  $attr += '<div>'+key+'   '+value+'</div>';
-		 });		
+			 // Grab our attachment selection and construct a JSON representation of the model.
+			 var media_attachment = ty_uploader.state().get('selection').map( function( attachment ) {
+												  attachment = attachment.toJSON();
+												  return attachment; 
+												  });		 
+	
+			 $.each(media_attachment,function(k,v){
+		
+		//!转换成img target形式		
+	
+				 $imgurl = v.url;
+		
+		//!make it 150x150
+				 
+				 var reg = /\.jpg/g;
+				
+				 $img150 = $imgurl.replace(reg, '-150x150.jpg');
+				 
+				 
+		
+		//!获取最后一个元素
+		
+				 ty_reciever = $('.img-list-template');
 
-		 $img = '<img src="'+media_attachment[0].url+'" />';
 
-		 ty_reciever.find('input[type="text"]').after($attr);
+
+		//!输入新的列
+				
+					
+		/* 		 var listhtml = '<li class="img-list"><input type="hidden" placeholder="Enter" name="travel-imgs['+$('.img-list').size()+']" value="" /><img src="" /></li>'; */
+				 listhtml = ty_reciever.clone(true);
+				 jQuery('img', listhtml).attr('src', $img150);
+				 jQuery(listhtml).removeAttr('style').removeClass('img-list-template');
+				 jQuery('input', listhtml).attr('value', $imgurl);
+/*
+				 jQuery('input', listhtml).attr('value', $imgurl).attr('name',  function(index, name) {
+						return name.replace(/(\d+)/, function(fullMatch, n) {
+						return Number(n) + 1;
+					});
+				})
+*/
+				  
+		 //!插入 img 列表
+		
+		 		
+				 ty_reciever.before(listhtml);
+				 $('.img-list').not(".img-list-template").sortfix();
+	
+			 })
+			 
 		 });
+		 
 		 
 		// Now that everything has been set, let's open up the frame.
 		 ty_uploader.open();
-	 });
+		 });
+		 //!make it sortable
+	$('.img-area ul').sortable({
+			opacity: 0.6,
+			revert: true,
+			cursor: 'move',
+			handle: '.sort',
+			tolerance: "pointer" ,
+		  	update: function( event, ui ) {
+/* 		  		 alert("test"); */
+				 $('.img-list').not(".img-list-template").sortfix();
+				 }
+		 });
 })
 
 
